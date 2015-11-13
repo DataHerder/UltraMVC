@@ -6,6 +6,10 @@ Ultra-MVC
 A fast lightweight MVC framework
 --------------------------------
 
+### To install
+
+UltraMVC you can clone this repo or:
+
 ```
 #> npm install -g ultramvc
 #> ultramvc new project-name
