@@ -196,6 +196,10 @@ abstract class UltraMVCBootstrap {
 			// We are taking of the package name UltraMVC
 			array_shift($parts);
 			array_unshift($parts,'Library');
+		} elseif (substr($parts[0], 0, 5) == 'Ultra' && count($parts) == 1) {
+			// short hand sugar for controller extension
+			array_unshift($parts, substr($parts[0], 5) . 's');
+			array_unshift($parts, 'Library');
 		}
 
 		if (!empty(self::$registerPaths)) {

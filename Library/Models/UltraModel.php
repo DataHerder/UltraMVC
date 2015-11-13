@@ -27,7 +27,6 @@
  * @since       File available since
  */
 
-namespace UltraMVC\Models;
 
 /**
  * The beginnings of the ModelAbstract class
@@ -38,7 +37,7 @@ namespace UltraMVC\Models;
  * @subpackage 
  * 
  */
-abstract class ModelsAbstract {
+abstract class UltraModel {
 
 	/**
 	 * 

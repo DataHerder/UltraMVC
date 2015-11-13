@@ -26,7 +26,6 @@
  * @link        my.public.repo
  * @since       File available since
  */
-namespace UltraMVC\Controllers;
 
 
 /**
@@ -36,7 +35,7 @@ namespace UltraMVC\Controllers;
  * @package Controllers
  * @subpackage ControllerAbstract
  */
-abstract class ControllerAbstract
+abstract class UltraController
 {
 
 	/**

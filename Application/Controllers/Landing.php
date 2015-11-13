@@ -1,7 +1,7 @@
 <?php 
 namespace Application\Controllers;
 
-class Landing extends \UltraMVC\Controllers\ControllerAbstract {
+class Landing extends \UltraController {
 	public function __construct(){
 		parent::__construct();
 	}
