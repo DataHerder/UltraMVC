@@ -5,3 +5,8 @@ Ultra-MVC
 
 A fast lightweight MVC framework
 --------------------------------
+
+```
+#> npm install -g ultramvc
+#> ultramvc new project-name
+```
