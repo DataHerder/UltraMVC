@@ -17,6 +17,7 @@ class Bootstrap extends \UltraMVC\UltraMVCBootstrap{
 	 */
 	protected function _init()
 	{
+
 		// example function of how autoload is used
 		// the parts of the path is shows as in the $parts array and passed
 		// as reference, you can then manipulate the directory location
@@ -27,7 +28,38 @@ class Bootstrap extends \UltraMVC\UltraMVCBootstrap{
 				array_unshift($parts,'Application');
 			}
 		});
+
+
+		/**
+		 * Register a Route Example
+		 *
+		 * Registering routes can take some of the headache out of directly mapping
+		 * Controllers to files which may happen when you embed into directories
+		 *
+		 * If you have an issue with embedded files and casing, this will help
+		 * alleviate the issue
+		 *
+		 * Generally speaking you won't need this if you name your files
+		 * Proper case, keep apache urls case insensitive in your config,
+		 * set the application to case insensitive and follow the documentation.
+		 *
+		 * However there will always be a straggling case.  You can directly
+		 * modify a route by URL here.
+		 *
+		 * Below you will find 2 flavors:
+		 *
+		 	$this->registerRoute(
+				'my/url/thats-very-specific',
+				'SomeOther/Folder/UnrelatedController.php->the_function_that_runs'
+			);
+			$this->registerRoute('my/url/thats-very-specific', array(
+				'file' => 'SomeOther/Folder/UnrelatedController.php',
+				'function' => 'the_function_that_runs'
+			));
+		 */
+
 	}
+
 
 	/**
 	 * This is the hook class

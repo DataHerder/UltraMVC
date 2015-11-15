@@ -73,6 +73,13 @@ abstract class UltraMVCBootstrap {
 	protected static $registerPaths = array();
 
 	/**
+	 * The array that holds registered paths
+	 *
+	 * @var array
+	 */
+	protected static $registerRoutes = array();
+
+	/**
 	 * Init method must exist in the class
 	 *
 	 * This is the user defined Bootstrap method primarily used for registering module paths that do not
@@ -127,7 +134,6 @@ abstract class UltraMVCBootstrap {
 	}
 
 
-
 	/**
 	 * Autoload classes without instantiating bootstrap
 	 */
@@ -135,6 +141,7 @@ abstract class UltraMVCBootstrap {
 	{
 		spl_autoload_register('UltraMVC\UltraMVCBootstrap::requireLibrary');
 	}
+
 
 	/**
 	 * Require Helpers requires the needed helper function
@@ -150,11 +157,7 @@ abstract class UltraMVCBootstrap {
 		require_once('Helpers/Functions/Request.php');
 	}
 
-	/**
-	 *
-	 *
-	 *
-	 */
+
 	public function __get($name)
 	{
 		if (!isSet($this->globals[$name])) {
@@ -222,11 +225,39 @@ abstract class UltraMVCBootstrap {
 
 	}
 
+
+	public function getRegisteredRoutes()
+	{
+		return self::$registerRoutes;
+	}
+
+
+	/**
+	 * @param $func
+	 */
 	protected function registerPath($func)
 	{
 		if (is_callable($func)) {
 			array_push(self::$registerPaths, $func);
 		}
+	}
+
+
+	/**
+	 * @param array $paths
+	 */
+	protected function registerRoute($url = '', $route_meta = array())
+	{
+		$route = array();
+		if (is_array($route_meta)) {
+			$route['file'] = $route_meta['file'];
+			$route['function'] = $route_meta['function'];
+		} elseif (is_string($route_meta)) {
+			$tmp = explode("->", $route_meta);
+			$route['file'] = $tmp[0];
+			$route['function'] = $tmp[1];
+		}
+		self::$registerRoutes[$url] = $route;
 	}
 
 	protected function setModel($variable_or_callable = null)

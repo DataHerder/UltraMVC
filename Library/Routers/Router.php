@@ -79,7 +79,6 @@ final class Router {
 		$this->Error = new \UltraMVC\Views\Errors\Error;
 	}
 
-
 	/**
 	 * Gets the the controller needed to finish the request
 	 * 
@@ -91,6 +90,14 @@ final class Router {
 	{
 		list($page, $controller, $path) = $this->_traverseRoute();
 
+		$full_path = join('/', $this->route);
+		if (!CONTROLLER_CASE_SENSITIVE) {
+			$full_path = strtolower($full_path);
+		}
+
+
+		$controllers = array();
+		$registered_routes = $this->Bootstrap->getRegisteredRoutes();
 
 		if (!empty($path)) {
 			$namespace = 'Application\Controllers\\'.join('\\', array_map('ucwords', $path));
@@ -106,54 +113,81 @@ final class Router {
 			$page = $this->Bootstrap->root;
 		}
 
-		// if controller case sensitivity is set to true, then the literal url
-		// signifies the case of the controller, otherwise it follows proper case
-		// \Application\Controllers\ControllerName
+		// this needs to be looked at here
 		if (!CONTROLLER_CASE_SENSITIVE) {
-			$page = ucwords($page);
+			//$page = ucwords($page);
 			$controller = ucwords($controller);
 		}
 
-		$controllers = array();
-		if ($page != $this->Bootstrap->root) {
-			if ($controller == '') {
-				$controller = $this->Bootstrap->default_controller;
-			}
 
-			if (!CONTROLLER_CASE_SENSITIVE) {
-				$controller = ucwords($controller);
-			}
+		if (isSet($registered_routes[$full_path])) {
 
-			$controllers[0] = array(
-				'page' => $page,
+			// need to do this in this case
+			$root_dir = explode("/", $root_dir);
+			array_pop($root_dir);
+			$controllers[] = array(
+				'page' => preg_replace("@-@", '_', $page),
 				'controller' => $controller,
-				'php_file' => $root_dir.'/'.$controller.'.php',
-				'class' => $namespace.'\\'.$controller,
+				'php_file' => join('/', $root_dir).'/'. $registered_routes[$full_path]['file'],
+				'class' => $namespace . '\\' . $controller,
 				'_page' => false,
 			);
-			$controllers[1] = array(
-				'page' => $this->Bootstrap->root,
-				'controller' => $page,
-				'php_file' => $root_dir.'/'.$page.'.php',
-				'class' => $namespace.'\\'.$page,
-				'_page' => true,
-			);
-			$controllers[2] = array(
-				'page' => $this->Bootstrap->root,
-				'controller' => $controller,
-				'php_file' => $root_dir.'/'.$controller.'/'.$page.'.php',
-				'class' => $namespace.'\\'.$controller.'\\'.$page,
-				'_page' => false,
-			);
+
 		} else {
-			$controllers[0] = array(
-				'page' => $page,
-				'controller' => $controller,
-				'php_file' => $root_dir.'/'.$controller.'.php',
-				'class' => $namespace.'\\'.$controller,
-				'_page' => false,
-			);
+
+			// if controller case sensitivity is set to true, then the literal url
+			// signifies the case of the controller, otherwise it follows proper case
+			// \Application\Controllers\ControllerName
+			if ($page != $this->Bootstrap->root) {
+				if ($controller == '') {
+					$controller = $this->Bootstrap->default_controller;
+				}
+
+				$under_score_controller = $this->_formatPageController($controller);
+				$under_score_page = $this->_formatPageController($page);
+
+				$controllers[] = array(
+						'page' => $page,
+						'controller' => $controller,
+						'php_file' => $root_dir.'/'.$under_score_controller.'.php',
+						'class' => $namespace.'\\'.$under_score_page,
+						'_page' => false,
+				);
+				$controllers[] = array(
+						'page' => $page,
+						'controller' => $controller,
+						'php_file' => $root_dir.'/'.$under_score_controller.'.php',
+						'class' => $namespace.'\\'.$under_score_controller,
+						'_page' => false,
+				);
+				$controllers[] = array(
+						'page' => $this->Bootstrap->root,
+						'controller' => $page,
+						'php_file' => $root_dir.'/'.$under_score_page.'.php',
+						'class' => $namespace.'\\'.$under_score_page,
+						'_page' => true,
+				);
+				$controllers[] = array(
+						'page' => $this->Bootstrap->root,
+						'controller' => $controller,
+						'php_file' => $root_dir.'/'.$controller.'/'.$under_score_page.'.php',
+						'class' => $namespace.'\\'.$under_score_controller.'\\'.$under_score_page,
+						'_page' => false,
+				);
+
+			} else {
+
+				$under_score_controller = $this->_formatPageController($controller);
+				$controllers[0] = array(
+						'page' => $page,
+						'controller' => $controller,
+						'php_file' => $root_dir.'/'.$controller.'.php',
+						'class' => $namespace.'\\'.$under_score_controller,
+						'_page' => false,
+				);
+			}
 		}
+
 
 
 		for ($i = 0; $i < count($controllers); $i++) {
@@ -171,7 +205,7 @@ final class Router {
 						array_shift($tmp); // strip the library off the query string and implode the rest
 					}
 					$qst = implode('&', $tmp);
-					$q = $uri.'/';
+					$q = $uri . '/';
 					if ($qst != '') {
 						$q .= '?'.$qst;
 					}
@@ -192,6 +226,17 @@ final class Router {
 
 		throw new \UltraMVC\Routers\RouterException('Document not found');
 
+	}
+
+
+	/**
+	 * @param string $page_controller
+	 * @return string
+	 */
+	private function _formatPageController($page_controller = '')
+	{
+		$tmp = ucwords(join(' ', explode('-', $page_controller)));
+		return join('_', explode(' ', $tmp));
 	}
 
 
