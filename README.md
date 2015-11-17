@@ -1,7 +1,7 @@
 Ultra-MVC
 ========
 
-![MacOSX Node](https://github.com/DataHerder/ultramvc-cli)
+[MacOSX Node](https://github.com/DataHerder/ultramvc-cli)
 
 Application Development on Steroids
 -----------------------------------
