@@ -4,7 +4,7 @@ include_once("../config.php");
 load_bootstrap();
 
 use UltraMVC\Api\Api as Api;
-use UltraMVC\Api\ApiClasses\ApiException as ApiException;
+use UltraMVC\Api\Library\ApiException as ApiException;
 
 
 class MyApi extends Api
