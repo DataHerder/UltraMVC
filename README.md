@@ -11,9 +11,11 @@ Application Development on Steroids
 
 ### To install
 
-UltraMVC you can clone this repo or:
+The best way is to:
 
 ```
 #> npm install -g ultramvc
 #> ultramvc new project-name
 ```
+
+Or clone this repository
