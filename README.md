@@ -1,10 +1,13 @@
 Ultra-MVC
 ========
 
-## Currently in beta - not intended for use
+[![MacOSX Node]](https://github.com/DataHerder/ultramvc-cli)
 
-A fast lightweight MVC framework
---------------------------------
+Application Development on Steroids
+-----------------------------------
+
+### Currently in beta - not intended for use yet
+
 
 ### To install
 
