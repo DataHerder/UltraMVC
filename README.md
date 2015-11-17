@@ -1,4 +1,4 @@
-Ultra-MVC
+UltraMVC
 ========
 
 [MacOSX &amp; Node.js](https://github.com/DataHerder/ultramvc-cli)
