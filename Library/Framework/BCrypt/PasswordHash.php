@@ -242,7 +242,7 @@ final class PasswordHash {
 		return '*';
 	}
 
-	public function checkPassword($password, $stored_hash)
+	public function checkPassword($password, $stored_hash = '')
 	{
 		$hash = $this->crypt_private($password, $stored_hash);
 		if ($hash[0] == '*')

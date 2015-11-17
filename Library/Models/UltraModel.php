@@ -3,7 +3,7 @@
  * UltraMVC
  * A fast lightweight Model View Controller framework
  * 
- * Copyright (C) 2014  Paul Carlton
+ * Copyright (C) 2015 Paul Carlton
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ abstract class UltraModel {
 
 	/**
 	 * 
-	 * @var Password
+	 * @var \UltraMVC\Framework\BCrypt\PasswordHash
 	 * @access private
 	 */
 	protected $PasswordHash;
@@ -73,7 +73,7 @@ abstract class UltraModel {
 	 * @access public
 	 *
 	 * @param mixed $toHash
-	 * @throws \UltraMVC\ModelException
+	 * @throws \UltraModelException
 	 * @return mixed
 	 */
 	public function hash($toHash = null)
@@ -87,7 +87,7 @@ abstract class UltraModel {
 			}
 			return $toHash;
 		} elseif (is_object($toHash) && (!$toHash instanceof \stdClass)) {
-			throw new \UltraMVC\ModelException('Trying to hash an invalid value');
+			throw new \UltraModelException('Trying to hash an invalid value');
 		} else {
 			return $this->PasswordHash->HashPassword($toHash);
 		}
@@ -98,7 +98,7 @@ abstract class UltraModel {
 	 * 
 	 * @access public
 	 * @param mixed $fromHash
-	 * @throws \UltraMVC\ModelException
+	 * @throws \UltraModelException
 	 * @return mixed
 	 */
 	public function check($fromHash = null)
@@ -112,7 +112,7 @@ abstract class UltraModel {
 			}
 			return $toHash;
 		} elseif (is_object($fromHash) && (!$fromHash instanceof \stdClass)) {
-			throw new \UltraMVC\ModelException('Trying to hash an invalid value');
+			throw new \UltraModelException('Trying to hash an invalid value');
 		} else {
 			return $this->PasswordHash->CheckPassword($fromHash);
 		}
@@ -123,4 +123,4 @@ abstract class UltraModel {
  * Shell for the model exception
  * 
  */
-class ModelException extends \Exception {}
+class UltraModelException extends \Exception {}
