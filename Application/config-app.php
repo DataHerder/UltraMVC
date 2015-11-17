@@ -131,6 +131,17 @@ define('DEFAULT_CONTROLLER', 'Landing');
 define('CONTROLLER_CASE_SENSITIVE', false);
 
 
+/**
+ * Constant to determine if LOCALHOST
+ */
+if ($_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+	define('LOCALHOST', true);
+	define('HTTP_HOST', '');
+} else {
+	define('LOCALHOST', false);
+	define('HTTP_HOST', $_SERVER['HTTP_HOST']);
+}
+
 ///////////////////////////////////////////////////////////
 //
 // END FRAMEWORK CONSTANTS
