@@ -40,6 +40,9 @@
  * of constants that run the Library
  */
 
+// session start gets moved right to the top
+session_start();
+
 /**
  * Define the root directory
  * Whatever root directory the config file sits in is the

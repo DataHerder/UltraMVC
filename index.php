@@ -46,7 +46,7 @@
  * config-app.php - configures the system
  * Bootstrap  - initializes the system
  */
-require("config.php");
+require("Library/config.php");
 require("Library/UltraMVCBootstrap.php");
 require("Application/bootstrap.php");
 
