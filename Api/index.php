@@ -7,6 +7,10 @@ use UltraMVC\Api\Api as Api;
 use UltraMVC\Api\Library\ApiException as ApiException;
 
 
+
+/**
+ * Class MyApi
+ */
 class MyApi extends Api
 {
 

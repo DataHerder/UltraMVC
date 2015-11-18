@@ -6,6 +6,7 @@ use UltraMVC\Api\Library\ApiException;
 use UltraMVC\Api\Library\ApiSyntaxException;
 use UltraMVC\Api\Library\XmlOutput;
 use UltraMVC\Api\Modules\MsgPack\MsgPack_Coder;
+use UltraMVC\Framework\UltraSessions;
 
 class Api extends Library\ApiAbstract {
 
@@ -43,7 +44,7 @@ class Api extends Library\ApiAbstract {
 		if (!is_bool($ignore_autoload) && !is_null($ignore_autoload) && $ignore_autoload != '') {
 			$ignore_autoload = true;
 		}
-		$_SESSION['$$ULTRA-MVC']['IGNORE_AUTOLOAD'] = $ignore_autoload;
+		UltraSessions::sval('ignore_autoload', $ignore_autoload);
 	}
 
 	/**
