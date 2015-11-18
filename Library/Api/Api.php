@@ -26,8 +26,23 @@ class Api extends Library\ApiAbstract {
 	protected static $header_content_callback = null;
 
 
-	protected function ignore_autoload(boolean $ignore_autoload = false)
+	/**
+	 * Set the Ignore Autoload feature OFF
+	 *
+	 * This can be handy when trying to bootstrap an external library in that
+	 * does not play well with UltraMVC
+	 *
+	 * DO NOT forget to turn it back on when you're done loading what you need to load
+	 * from another library, that can cause headaches :-/
+	 *
+	 * @param bool|false $ignore_autoload
+	 */
+	protected function ignore_autoload($ignore_autoload = false)
 	{
+		// truthy
+		if (!is_bool($ignore_autoload) && !is_null($ignore_autoload) && $ignore_autoload != '') {
+			$ignore_autoload = true;
+		}
 		$_SESSION['$$ULTRA-MVC']['IGNORE_AUTOLOAD'] = $ignore_autoload;
 	}
 
