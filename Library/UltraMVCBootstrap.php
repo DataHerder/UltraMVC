@@ -276,6 +276,12 @@ abstract class UltraMVCBootstrap {
 		}
 	}
 
+
+	public function __destruct()
+	{
+		// RESET ignore autoload back to default on destruct
+		$_SESSION['$$ULTRA-MVC']['IGNORE_AUTOLOAD'] = false;
+	}
 }
 
 /**
