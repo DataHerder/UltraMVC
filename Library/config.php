@@ -45,11 +45,9 @@ session_start();
 
 /**
  * Define the root directory
- * Whatever root directory the config file sits in is the
- * root directory -> use the realpath of the dirname to get
- * the root directory
+ * From up one level of the Library
  */
-define('ROOT_DIR', realpath(dirname(__FILE__)));
+define('ROOT_DIR', realpath(dirname(__FILE__).'/../'));
 
 /**
  * Define the current working directory apart from the
@@ -75,4 +73,13 @@ if (PRODUCTION) {
 	define('DEBUG', false);
 } else {
 	define('DEBUG', true);
+}
+
+/**
+ * Here we begin to define session variables SPECIFIC TO UltraMVC
+ */
+if (!isSet($_SESSION['$$ULTRA-MVC'])) {
+	$_SESSION['$$ULTRA-MVC'] = array(
+			'IGNORE_AUTOLOAD' => false
+	);
 }

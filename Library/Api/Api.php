@@ -26,6 +26,11 @@ class Api extends Library\ApiAbstract {
 	protected static $header_content_callback = null;
 
 
+	protected function ignore_autoload(boolean $ignore_autoload = false)
+	{
+		$_SESSION['$$ULTRA-MVC']['IGNORE_AUTOLOAD'] = $ignore_autoload;
+	}
+
 	/**
 	* Create new Api call
 	*/

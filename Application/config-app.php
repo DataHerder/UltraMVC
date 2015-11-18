@@ -71,6 +71,7 @@ if (PRODUCTION) {
 } else {
 	error_reporting(E_ALL ^ E_NOTICE);
 }
+
 /**
  * This logic takes the root directory and makes
  * a constant out of the ending root

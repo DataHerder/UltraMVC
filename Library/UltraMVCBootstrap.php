@@ -190,6 +190,10 @@ abstract class UltraMVCBootstrap {
 	public static function requireLibrary($class_name)
 	{
 		// for here we want to shift the first
+		if ($_SESSION['$$ULTRA-MVC']['IGNORE_AUTOLOAD']) {
+			return;
+		}
+		// for here we want to shift the first
 		$dir = ROOT_DIR;
 		if (preg_match("@Api/?$@", $dir)) {
 			$dir = preg_replace("@Api/?$@", "", $dir);
