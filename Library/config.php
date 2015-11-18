@@ -78,7 +78,7 @@ if (PRODUCTION) {
 /**
  * Here we begin to define session variables SPECIFIC TO UltraMVC
  */
-if (!isSet($_SESSION['$$ULTRA-MVC'])) {
+if (!isSet($_SESSION['$$ULTRA-MVC']) || isSet($_GET['$$ultra-hard-reset'])) {
 	$_SESSION['$$ULTRA-MVC'] = array(
 			'IGNORE_AUTOLOAD' => false
 	);
