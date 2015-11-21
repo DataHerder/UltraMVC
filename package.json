@@ -1,0 +1,39 @@
+{
+  "name": "ultramvc",
+  "version": "1.0.0",
+  "description": "An UltraMVC Application",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.9.0"
+  },
+  "devDependencies": {
+    "convert-source-map": "^1.1.2",
+    "dargs": "^4.0.1",
+    "each-async": "^1.1.1",
+    "glob": "^6.0.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.1.0",
+    "gulp-util": "^3.0.7",
+    "mkdirp": "^0.5.1",
+    "object-assign": "^4.0.1",
+    "rimraf": "^2.4.4",
+    "slash": "^1.0.0",
+    "vinyl": "^1.1.0",
+    "win-spawn": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DataHerder/UltraMVC.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DataHerder/UltraMVC/issues"
+  },
+  "homepage": "https://github.com/DataHerder/UltraMVC#readme"
+}
