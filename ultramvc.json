@@ -1,0 +1,17 @@
+{
+  "styles": ["./resources/sass/app.scss"],
+  "script": ["./resources/js/app.js"],
+  "watch": {
+    "styles": [
+      "./resources/sass/*.scss",
+      "./resources/sass/**/*.scss"
+    ],
+    "script": [
+      "./resources/js/*.js",
+      "./resources/js/**/*.js"
+    ]
+  },
+  "includes": {
+    "js": []
+  }
+}
