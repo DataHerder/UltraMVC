@@ -1,14 +1,16 @@
 {
-  "styles": ["./resources/sass/app.scss"],
-  "script": ["./resources/js/app.js"],
   "watch": {
     "styles": [
-      "./resources/sass/*.scss",
-      "./resources/sass/**/*.scss"
+      ["./resources/sass/app.scss", "./resources/app/css/", [
+        "./resources/sass/*.scss",
+        "./resources/sass/**/*.scss"
+      ]]
     ],
-    "script": [
-      "./resources/js/*.js",
-      "./resources/js/**/*.js"
+    "scripts": [
+      ["./resources/js/*.js", "./resources/app/js", [
+        "./resources/js/*.js",
+        "./resources/js/**/*.js"
+      ]]
     ]
   },
   "includes": {
