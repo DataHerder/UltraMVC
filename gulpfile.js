@@ -14,16 +14,16 @@ var ultra = JSON.parse(fs.readFileSync('ultramvc.json'));
 
 watch_list = [];
 (function() {
-	for (var i = 0; i < ultra['watch']['styles'].length; i++) {
-		var style_data = ultra['watch']['styles'][i];
+	for (var i = 0; i < ultra['watch']['sass'].length; i++) {
+		var style_data = ultra['watch']['sass'][i];
 		var read = style_data[0];
 		var write = style_data[1];
 		var watch = style_data[2];
 		var concat_styles = style_data[3];
-		watch_list.push(['styles' + i, watch]);
+		watch_list.push(['sass' + i, watch]);
 		if (concat_styles) {
 			(function(read, write, concat_styles) {
-				gulp.task('styles' + i, function () {
+				gulp.task('sass' + i, function () {
 					gulp.src(read)
 							.pipe(concat(concat_styles))
 							.pipe(sass('sass', {style: 'expanded'}))
@@ -37,7 +37,7 @@ watch_list = [];
 			}(read, write, concat_styles));
 		} else {
 			(function(read, write) {
-				gulp.task('styles' + i, function() {
+				gulp.task('sass' + i, function() {
 					gulp.src(read)
 							.pipe(sass('sass', {style: 'expanded'}))
 							.on('error', sass.logError)
