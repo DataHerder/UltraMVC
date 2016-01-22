@@ -160,7 +160,7 @@ final class Router {
 					'php_file' => $root_dir . '/' . $under_score_page . '/Index.php',
 					'class' => $namespace . '\\' . $under_score_page . '\\Index',
 					'_page' => false,
-				),
+				);
 				$controllers[] = array(
 					'page' => $page,
 					'controller' => $controller,
