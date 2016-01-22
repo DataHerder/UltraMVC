@@ -146,54 +146,69 @@ final class Router {
 				$under_score_controller = $this->_formatPageController($controller);
 				$under_score_page = $this->_formatPageController($page);
 
+				// first check for the Index: this is the Index controller of a directory
 				$controllers[] = array(
-						'page' => $page,
-						'controller' => $controller,
-						'php_file' => $root_dir.'/'.$under_score_controller.'.php',
-						'class' => $namespace.'\\'.$under_score_page,
-						'_page' => false,
+					'page' => $this->Bootstrap->root,
+					'controller' => 'Index',
+					'php_file' => $root_dir . '/' . $under_score_page . '/Index.php',
+					'class' => $namespace . '\\' . $under_score_page . '\\Index',
+					'_page' => false,
 				);
 				$controllers[] = array(
-						'page' => $page,
-						'controller' => $controller,
-						'php_file' => $root_dir.'/'.$under_score_controller.'.php',
-						'class' => $namespace.'\\'.$under_score_controller,
-						'_page' => false,
+					'page' => $page,
+					'controller' => 'Index',
+					'php_file' => $root_dir . '/' . $under_score_page . '/Index.php',
+					'class' => $namespace . '\\' . $under_score_page . '\\Index',
+					'_page' => false,
+				),
+				$controllers[] = array(
+					'page' => $page,
+					'controller' => $controller,
+					'php_file' => $root_dir.'/'.$under_score_controller.'.php',
+					'class' => $namespace.'\\'.$under_score_page,
+					'_page' => false,
 				);
 				$controllers[] = array(
-						'page' => $this->Bootstrap->root,
-						'controller' => $page,
-						'php_file' => $root_dir.'/'.$under_score_page.'.php',
-						'class' => $namespace.'\\'.$under_score_page,
-						'_page' => true,
+					'page' => $page,
+					'controller' => $controller,
+					'php_file' => $root_dir.'/'.$under_score_controller.'.php',
+					'class' => $namespace.'\\'.$under_score_controller,
+					'_page' => false,
 				);
 				$controllers[] = array(
-						'page' => $this->Bootstrap->root,
-						'controller' => $controller,
-						'php_file' => $root_dir.'/'.$controller.'/'.$under_score_page.'.php',
-						'class' => $namespace.'\\'.$under_score_controller.'\\'.$under_score_page,
-						'_page' => false,
+					'page' => $this->Bootstrap->root,
+					'controller' => $page,
+					'php_file' => $root_dir.'/'.$under_score_page.'.php',
+					'class' => $namespace.'\\'.$under_score_page,
+					'_page' => true,
+				);
+				$controllers[] = array(
+					'page' => $this->Bootstrap->root,
+					'controller' => $controller,
+					'php_file' => $root_dir.'/'.$controller.'/'.$under_score_page.'.php',
+					'class' => $namespace.'\\'.$under_score_controller.'\\'.$under_score_page,
+					'_page' => false,
 				);
 
 			} else {
 
 				$under_score_controller = $this->_formatPageController($controller);
 				$controllers[0] = array(
-						'page' => $page,
-						'controller' => $controller,
-						'php_file' => $root_dir.'/'.$controller.'.php',
-						'class' => $namespace.'\\'.$under_score_controller,
-						'_page' => false,
+					'page' => $page,
+					'controller' => $controller,
+					'php_file' => $root_dir.'/'.$controller.'.php',
+					'class' => $namespace.'\\'.$under_score_controller,
+					'_page' => false,
 				);
 			}
 		}
-
 
 
 		for ($i = 0; $i < count($controllers); $i++) {
 			$php_file = $controllers[$i]['php_file'];
 			$class = $controllers[$i]['class'];
 			$page = $controllers[$i]['page'];
+			dbg_array($php_file);
 			if (is_readable($php_file)) {
 				// redirect with query
 				$uri = $_SERVER['REQUEST_URI'];

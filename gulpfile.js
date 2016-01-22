@@ -25,13 +25,13 @@ watch_list = [];
 			(function(read, write, concat_styles) {
 				gulp.task('sass' + i, function () {
 					gulp.src(read)
-							.pipe(concat(concat_styles))
-							.pipe(sass('sass', {style: 'expanded'}))
-							.on('error', sass.logError)
-							.pipe(gulp.dest(write))
-							.pipe(minifycss())
-							.pipe(rename({suffix: '.min'}))
-							.pipe(gulp.dest(write))
+						.pipe(concat(concat_styles))
+						.pipe(sass('sass', {style: 'expanded'}))
+						.on('error', sass.logError)
+						.pipe(gulp.dest(write))
+						.pipe(minifycss())
+						.pipe(rename({suffix: '.min'}))
+						.pipe(gulp.dest(write))
 					;
 				});
 			}(read, write, concat_styles));
@@ -39,12 +39,12 @@ watch_list = [];
 			(function(read, write) {
 				gulp.task('sass' + i, function() {
 					gulp.src(read)
-							.pipe(sass('sass', {style: 'expanded'}))
-							.on('error', sass.logError)
-							.pipe(gulp.dest(write))
-							.pipe(minifycss())
-							.pipe(rename({suffix:'.min'}))
-							.pipe(gulp.dest(write))
+						.pipe(sass('sass', {style: 'expanded'}))
+						.on('error', sass.logError)
+						.pipe(gulp.dest(write))
+						.pipe(minifycss())
+						.pipe(rename({suffix:'.min'}))
+						.pipe(gulp.dest(write))
 					;
 				});
 			})(read, write);
@@ -63,12 +63,12 @@ watch_list = [];
 			(function(read, write, concat_scripts) {
 				gulp.task('scripts' + i, function() {
 					gulp.src(read)
-							.pipe(concat(concat_scripts))
-							.pipe(gulp.dest(write))
-							.pipe(uglify())
-							.pipe(jsmin())
-							.pipe(rename({suffix: '.min'}))
-							.pipe(gulp.dest(write))
+						.pipe(concat(concat_scripts))
+						.pipe(gulp.dest(write))
+						.pipe(uglify())
+						.pipe(jsmin())
+						.pipe(rename({suffix: '.min'}))
+						.pipe(gulp.dest(write))
 					;
 				});
 			})(read, write, concat_scripts)
@@ -76,10 +76,10 @@ watch_list = [];
 			(function(read, write) {
 				gulp.task('scripts' + i, function() {
 					gulp.src(read)
-							.pipe(uglify())
-							.pipe(jsmin())
-							.pipe(rename({suffix: '.min'}))
-							.pipe(gulp.dest(write))
+						.pipe(uglify())
+						.pipe(jsmin())
+						.pipe(rename({suffix: '.min'}))
+						.pipe(gulp.dest(write))
 					;
 				});
 			})(read, write);
