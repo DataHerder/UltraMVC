@@ -193,7 +193,14 @@ final class Router {
 			} else {
 
 				$under_score_controller = $this->_formatPageController($controller);
-				$controllers[0] = array(
+				// index now overrides controller.php -> index func
+				$controllers[] = array(
+					'page' => $page,
+					'controller' => 'Index',
+					'php_file' => $root_dir . '/' . $controller . '/Index.php',
+					'class' => $namespace.'\\'.$under_score_controller.'\\Index',
+				);
+				$controllers[] = array(
 					'page' => $page,
 					'controller' => $controller,
 					'php_file' => $root_dir.'/'.$controller.'.php',
@@ -202,6 +209,7 @@ final class Router {
 				);
 			}
 		}
+
 
 
 		for ($i = 0; $i < count($controllers); $i++) {
