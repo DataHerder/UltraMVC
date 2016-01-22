@@ -208,7 +208,6 @@ final class Router {
 			$php_file = $controllers[$i]['php_file'];
 			$class = $controllers[$i]['class'];
 			$page = $controllers[$i]['page'];
-			dbg_array($php_file);
 			if (is_readable($php_file)) {
 				// redirect with query
 				$uri = $_SERVER['REQUEST_URI'];
