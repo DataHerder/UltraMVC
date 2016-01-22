@@ -95,13 +95,13 @@ final class Router {
 			$full_path = strtolower($full_path);
 		}
 
-
 		$controllers = array();
 		$registered_routes = $this->Bootstrap->getRegisteredRoutes();
 
+
 		if (!empty($path)) {
-			$namespace = 'Application\Controllers\\'.join('\\', array_map('ucwords', $path));
-			$root_dir = $this->dir.'/Application/Controllers/'.join('/',array_map('ucwords', $path));
+			$namespace = 'Application\Controllers\\'.join('\\', array_map([$this, '_formatController'], $path));
+			$root_dir = $this->dir.'/Application/Controllers/'.join('/',array_map([$this, '_formatController'], $path));
 		} else {
 			$namespace = 'Application\Controllers';
 			$root_dir = $this->dir.'/Application/Controllers';
@@ -118,6 +118,7 @@ final class Router {
 			//$page = ucwords($page);
 			$controller = ucwords($controller);
 		}
+
 
 
 		if (isSet($registered_routes[$full_path])) {
@@ -138,73 +139,87 @@ final class Router {
 			// if controller case sensitivity is set to true, then the literal url
 			// signifies the case of the controller, otherwise it follows proper case
 			// \Application\Controllers\ControllerName
-			if ($page != $this->Bootstrap->root) {
+			$controllers = [];
+			$without_slash = $page != $this->Bootstrap->root;
+
+			if ($without_slash) {
 				if ($controller == '') {
 					$controller = $this->Bootstrap->default_controller;
 				}
 
-				$under_score_controller = $this->_formatPageController($controller);
-				$under_score_page = $this->_formatPageController($page);
+				// first we check to see if page is actually a directory
+				if (
+					is_dir($root_dir . '/' . $page) ||
+					is_dir($root_dir . '/' . $this->_formatController($page))) {
 
-				// first check for the Index: this is the Index controller of a directory
-				$controllers[] = array(
-					'page' => $this->Bootstrap->root,
-					'controller' => 'Index',
-					'php_file' => $root_dir . '/' . $under_score_page . '/Index.php',
-					'class' => $namespace . '\\' . $under_score_page . '\\Index',
-					'_page' => false,
-				);
-				$controllers[] = array(
+					$url = parse_url($_SERVER['REQUEST_URI']);
+					$full_url = $url['path'] . '/';
+					if (isSet($url['query'])) {
+						$full_url .= '?' . $url['query'];
+					}
+					// let's keep things simple, add the slash!
+					// lets make it a permanently moved 301 redirect for now
+					header('Location: ' . $full_url, true, 301);
+					die;
+				}
+
+				/* dbg_array([
+					'slash' => 0,
+					'bootstrap->root' => $this->Bootstrap->root,
 					'page' => $page,
-					'controller' => 'Index',
-					'php_file' => $root_dir . '/' . $under_score_page . '/Index.php',
-					'class' => $namespace . '\\' . $under_score_page . '\\Index',
-					'_page' => false,
-				);
-				$controllers[] = array(
-					'page' => $page,
+					'root_dir' => $root_dir,
+					'under_score_page' => $under_score_page,
+					'unser_score_controller' => $under_score_controller,
+					'namespace' => $namespace,
 					'controller' => $controller,
-					'php_file' => $root_dir.'/'.$under_score_controller.'.php',
-					'class' => $namespace.'\\'.$under_score_page,
-					'_page' => false,
-				);
+				]);*/
+
 				$controllers[] = array(
-					'page' => $page,
-					'controller' => $controller,
-					'php_file' => $root_dir.'/'.$under_score_controller.'.php',
-					'class' => $namespace.'\\'.$under_score_controller,
-					'_page' => false,
+					'page' => 'index',
+					'controller' => $this->_formatController($page),
+					'php_files' => array(
+						join('/', [
+							$root_dir,
+							$this->_formatController($controller),
+							$page . '.php'
+						]),
+						join('/', [
+							$root_dir,
+							$this->_formatController($controller),
+							$this->_formatController($page) . '.php'
+						]),
+					),
+					'class' => join('\\', [
+						$namespace,
+						$this->_formatController($controller),
+						$this->_formatController($page)
+					]),
+					'comment' => 'First check that the page is in fact a controller page',
 				);
+
 				$controllers[] = array(
-					'page' => $this->Bootstrap->root,
-					'controller' => $page,
-					'php_file' => $root_dir.'/'.$under_score_page.'.php',
-					'class' => $namespace.'\\'.$under_score_page,
-					'_page' => true,
+					// always format the page!
+					'page' => $this->_formatPage($page),
+					'controller' => $this->_formatController($controller),
+					'php_files' => [join('/', [$root_dir, $this->_formatController($controller).'.php'])],
+					'class' => join('\\', [$namespace, $this->_formatController($controller)]),
+					'comment' => 'The actual check as controller page',
 				);
-				$controllers[] = array(
-					'page' => $this->Bootstrap->root,
-					'controller' => $controller,
-					'php_file' => $root_dir.'/'.$controller.'/'.$under_score_page.'.php',
-					'class' => $namespace.'\\'.$under_score_controller.'\\'.$under_score_page,
-					'_page' => false,
-				);
+
+				// that's all we should need as far as logic!
 
 			} else {
-
-				$under_score_controller = $this->_formatPageController($controller);
-				// index now overrides controller.php -> index func
 				$controllers[] = array(
 					'page' => $page,
 					'controller' => 'Index',
-					'php_file' => $root_dir . '/' . $controller . '/Index.php',
-					'class' => $namespace.'\\'.$under_score_controller.'\\Index',
+					'php_files' => [$root_dir . '/' . $this->_formatController($controller) . '/Index.php'],
+					'class' => $namespace.'\\'.$this->_formatController($controller).'\\Index',
 				);
 				$controllers[] = array(
 					'page' => $page,
 					'controller' => $controller,
-					'php_file' => $root_dir.'/'.$controller.'.php',
-					'class' => $namespace.'\\'.$under_score_controller,
+					'php_files' => [$root_dir . '/' . $this->_formatController($controller) . '.php'],
+					'class' => $namespace.'\\'.$this->_formatController($controller),
 					'_page' => false,
 				);
 			}
@@ -213,43 +228,48 @@ final class Router {
 
 
 		for ($i = 0; $i < count($controllers); $i++) {
-			$php_file = $controllers[$i]['php_file'];
+			$php_files = $controllers[$i]['php_files'];
 			$class = $controllers[$i]['class'];
 			$page = $controllers[$i]['page'];
-			if (is_readable($php_file)) {
-				// redirect with query
-				$uri = $_SERVER['REQUEST_URI'];
-				list ($uri, $qst) = explode("?", $uri);
-				if (!preg_match("@/$@", $uri) && $controllers[$i]['_page'] === true && REDIRECT_SLASH) {
-					// strip the index
-					$tmp = explode("&", $qst);
-					if (preg_match("@__library_router_route@", $tmp[0])) {
-						array_shift($tmp); // strip the library off the query string and implode the rest
+			foreach ($php_files as $php_file) {
+				if (is_readable($php_file)) {
+					$cr = new $class;
+					if (method_exists($cr, $page)) {
+						call_user_func(array($cr, $page));
+						return true;
+					} elseif (!method_exists($cr, $page) && method_exists($cr, '__call')) {
+						$arguments = array();
+						$cr->_call($page, $arguments);
+						return true;
 					}
-					$qst = implode('&', $tmp);
-					$q = $uri . '/';
-					if ($qst != '') {
-						$q .= '?'.$qst;
-					}
-					header(':', true, 303);
-					header('Location: '.$q);
-				}
-				$cr = new $class;
-				if (method_exists($cr, $page)) {
-					call_user_func(array($cr, $page));
-					return true;
-				} elseif (!method_exists($cr, $page) && method_exists($cr, '__call')) {
-					$arguments = array();
-					$cr->_call($page, $arguments);
-					return true;
 				}
 			}
 		}
 
-		throw new \UltraMVC\Routers\RouterException('Document not found');
+		throw new RouterException('Document not found');
 
 	}
 
+
+	/**
+	 * Formats the initial page by special case
+	 * @param string $page_name
+	 * @return string
+	 */
+	private function _formatPage($page_name = '')
+	{
+		$tmp = explode('-', $page_name);
+		$first = array_shift($tmp);
+		return $first . join('', explode(' ', ucwords(join(' ', $tmp))));
+		return join('_', explode(' ', $tmp));
+	}
+
+
+	private function _formatController($controller_name = '')
+	{
+		$tmp = ucwords(join(' ', explode('-', $controller_name)));
+		return join('', explode(' ', $tmp));
+	}
 
 	/**
 	 * @param string $page_controller
@@ -325,9 +345,3 @@ final class Router {
  * Shell for the router exception thrown
  */
 class RouterException extends \Exception {}
-
-
-function dbg($data = array())
-{
-	print '<pre>'.print_r($data,true).'</pre>';
-}
