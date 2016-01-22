@@ -1,7 +1,7 @@
 <?php 
 namespace Application\Controllers;
 
-class Landing extends \UltraController {
+class Index extends \UltraController {
 	public function __construct(){
 		parent::__construct();
 	}
@@ -13,7 +13,6 @@ class Landing extends \UltraController {
 	 */
 	public function index()
 	{
-		$this->Load->view('Landings/welcome');
+		$this->Load->view('welcome');
 	}
-
 }

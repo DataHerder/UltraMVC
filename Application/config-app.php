@@ -105,7 +105,7 @@ define('SHOW_HTML_ON_LAST_EXCEPTION', true);
 /**
  * Define the default view
  */
-define('DEFAULT_CONTROLLER', 'Landing');
+define('DEFAULT_CONTROLLER', 'Index');
 
 
 /**
