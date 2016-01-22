@@ -11,6 +11,13 @@ function dbg_array($a, $return = false) {
 	dump_array($a, $return);
 }
 
+function dbg_dump($a)
+{
+	print '<pre>';
+	var_dump($a);
+	print '</pre>';
+}
+
 
 /**
  * Extract Array Members from an associative or default array
