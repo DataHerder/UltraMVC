@@ -8,14 +8,13 @@ final class HttpResponse extends Abstracts\ResponsesAbstract {
 	 * Construct the response, defaults to 307
 	 *
 	 * @param int $response_code
-	 * @param int $message
-	 * @param array $params
+	 * @param string|callable|boolean $message_or_callback
 	 * @param int $code
 	 * @param \Exception $previous
 	 */
-	public function __construct($response_code = 0, $message, $params = array(), $code = 0, \Exception $previous = null)
+	public function __construct($response_code = 0, $message_or_callback, $code = 0, \Exception $previous = null)
 	{
-		parent::__construct($response_code, $message, $params, $code, $previous);
+		parent::__construct($response_code, $message_or_callback, $code, $previous);
 		// check the bootstrap
 	}
 

@@ -28,31 +28,57 @@
  */
 namespace UltraMVC\Responses\Abstracts;
 
+use UltraMVC\Views\Loader;
+
+/**
+ * Class ResponsesAbstract
+ * @package UltraMVC\Responses\Abstracts
+ */
 abstract class ResponsesAbstract extends \Exception {
 
+	/**
+	 * @var int
+	 */
 	protected $response_code = 0;
+
+	/**
+	 * @var bool
+	 */
 	protected $internal_error = false;
+
+	/**
+	 * @var null|string
+	 */
 	protected $error_message = null;
+
+	/**
+	 * @var array
+	 */
 	protected $list_of_response_codes = array();
+
+	/**
+	 * @var bool|callable
+	 */
+	protected $callable = false;
+
+	/**
+	 * @var array
+	 */
 	private $allowed = array();
 
 	/**
 	 * Construct the http response exception
 	 *
 	 * @param int $response_code
-	 * @param int $message
-	 * @param array $params
+	 * @param string|callable $message_or_callback
 	 * @param int $code
 	 * @param \Exception $previous
 	 */
-	public function __construct($response_code = 0, $message, $params = array(), $code = 0, \Exception $previous = null)
+	public function __construct($response_code = 0, $message_or_callback, $code = 0, \Exception $previous = null)
 	{
-		parent::__construct($message, $response_code, $previous);
+
 		$this->response_code = $response_code;
-		if ($this->response_code == 0) {
-			$this->internal_error = true;
-			$this->error_message = 'Response Code set 0: Not a valid http response code';
-		}
+
 		// allowed response numbers
 		$this->list_of_response_codes = array(
 			'100' => 'Continue',
@@ -141,16 +167,34 @@ abstract class ResponsesAbstract extends \Exception {
 			'525' => 'SSL Handshake Failed',
 			'526' => 'Invalid SSL Certificate',
 		);
+
 		$found = in_array($this->response_code, array_keys($this->list_of_response_codes));
 
 		if (!$found) {
 			$this->internal_error = true;
 			$this->error_message = 'Response Code ' . $response_code . ' is not a valid http response code';
+		} else {
+			if (is_callable($message_or_callback)) {
+				$this->callable = $message_or_callback;
+				$message = 'Error: ' . $this->response_code . ' ' . $this->list_of_response_codes[$this->response_code];
+			} else {
+				$message = $message_or_callback;
+			}
+			parent::__construct($message, $response_code, $previous);
+			$this->response_code = $response_code;
+			if ($this->response_code == 0) {
+				$this->internal_error = true;
+				$this->error_message = 'Response Code set 0: Not a valid http response code';
+			}
 		}
+
 	}
 
 
-	// redirect
+	/**
+	 * @param array $params
+	 * @throws ResponseAbstractException
+	 */
 	public function redirect($params = array())
 	{
 		if (isSet($params['force_code']) && in_array($params['force_code'], $this->allowed)) {
@@ -176,34 +220,49 @@ abstract class ResponsesAbstract extends \Exception {
 		
 	}
 
+
+	/**
+	 * @param bool $html
+	 * @throws \UltraMVC\Views\LoaderException
+	 */
 	public function loadView($html = true)
 	{
-		header('HTTP/1.1 '.$this->response_code. ' '.$this->list_of_response_codes[$this->response_code]);
-		$Loader = new \UltraMVC\Views\Loader;
-		if ($Loader->viewExists('Responses/Response'.$this->response_code)) {
-			$Loader->view('Responses/Response'.$this->response_code);
+		$response_code_message = $this->list_of_response_codes[$this->response_code];
+		header('HTTP/1.1 '.$this->response_code. ' '.$response_code_message);
+		$Loader = new Loader();
+		if (is_callable($this->callable)) {
+			call_user_func($this->{'callable'});
+		} elseif ($Loader->viewExists('responses/'.$this->response_code)) {
+			$Loader->view('responses/' . $this->response_code);
 		} else {
 			if ($html) {
 			print '
-					<!DOCTYPE html>
-						<html>
-							<head>
-								<title>Error '.$this->resposne_code.'</title>
-							</head>
-							<body>
-								There was an error processing your request.  Response code: '.$this->response_code.'
-							</body>
-						</html>'
+				<!DOCTYPE html>
+					<html>
+						<head>
+							<title>'.$this->response_code.' ' . $response_code_message . '</title>
+						</head>
+						<body>
+							There was an error processing your request.  Response code: '.$this->response_code.' ' .
+							$response_code_message . '
+						</body>
+					</html>'
 				;
 			}
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasError()
 	{
 		return $this->internal_error;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public function getErrorMessage()
 	{
 		return $this->error_message;

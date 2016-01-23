@@ -1,6 +1,7 @@
 <?php 
 namespace Application\Controllers;
 
+
 class Index extends \UltraController {
 	public function __construct(){
 		parent::__construct();
