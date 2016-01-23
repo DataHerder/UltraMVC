@@ -28,6 +28,7 @@
  */
 
 namespace UltraMVC\Routers;
+use UltraMVC\Responses\HttpResponse;
 
 /**
  * The Router class routes URLs to the correct destination and controller
@@ -119,6 +120,14 @@ final class Router {
 			$controller = ucwords($controller);
 		}
 
+		if (is_numeric($page) && strlen($page) == 3) {
+			if ($page == 418) {
+				$message = "I'm a little teapot!";
+			} else {
+				$message = '';
+			}
+			throw new HttpResponse((int)$page, $message);
+		}
 
 
 		if (isSet($registered_routes[$full_path])) {

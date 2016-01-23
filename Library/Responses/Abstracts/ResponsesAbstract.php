@@ -33,6 +33,7 @@ abstract class ResponsesAbstract extends \Exception {
 	protected $response_code = 0;
 	protected $internal_error = false;
 	protected $error_message = null;
+	protected $list_of_response_codes = array();
 	private $allowed = array();
 
 	/**
@@ -46,29 +47,108 @@ abstract class ResponsesAbstract extends \Exception {
 	 */
 	public function __construct($response_code = 0, $message, $params = array(), $code = 0, \Exception $previous = null)
 	{
+		parent::__construct($message, $response_code, $previous);
 		$this->response_code = $response_code;
 		if ($this->response_code == 0) {
 			$this->internal_error = true;
 			$this->error_message = 'Response Code set 0: Not a valid http response code';
 		}
 		// allowed response numbers
-		$this->allowed = array(
-			300,301,302,303,304,305,306,307,
-			400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,
-			500,501,502,503,504,505
+		$this->list_of_response_codes = array(
+			'100' => 'Continue',
+			'101' => 'Switching Protocols',
+			'102' => 'Processing',
+			'103' => 'checkpoint',
+			'200' => 'OK',
+			'201' => 'Created',
+			'202' => 'Accepted',
+			'203' => 'Non-Authoritative Information',
+			'204' => 'No Content',
+			'205' => 'Reset Content',
+			'206' => 'Partial Content',
+			'207' => 'Multi-Status',
+			'208' => 'Already Reported',
+			'226' => 'IM Used',
+			'300' => 'Multiple Choices',
+			'301' => 'Moved Permanently',
+			'302' => 'Found',
+			'303' => 'See Other',
+			'304' => 'Not Modified',
+			'305' => 'Use Proxy',
+			'306' => 'Switch Proxy',
+			'307' => 'Temporary Redirect',
+			'308' => 'Permanent Redirect',
+			//'404' => 'error on German Wikipedia',
+			'400' => 'Bad Request',
+			'401' => 'Unauthorized',
+			'402' => 'Payment Required',
+			'403' => 'Forbidden',
+			'404' => 'Not Found',
+			'405' => 'Method Not Allowed',
+			'406' => 'Not Acceptable',
+			'407' => 'Proxy Authentication Required',
+			'408' => 'Request Timeout',
+			'409' => 'Conflict',
+			'410' => 'Gone',
+			'411' => 'Length Required',
+			'412' => 'Precondition Failed',
+			'413' => 'Payload Too Large',
+			'414' => 'URI Too Long',
+			'415' => 'Unsupported Media Type',
+			'416' => 'Range Not Satisfiable',
+			'417' => 'Expectation Failed',
+			'418' => 'I\'m a teapot',
+			'419' => 'Authentication Timeout',
+			'421' => 'Misdirected Request',
+			'422' => 'Unprocessable Entity',
+			'423' => 'Locked',
+			'424' => 'Failed Dependency',
+			'426' => 'Upgrade Required',
+			'428' => 'Precondition Required',
+			'429' => 'Too Many Requests',
+			'431' => 'Request Header Fields Too Large',
+			'451' => 'Unavailable For Legal Reasons',
+			'500' => 'Internal Server Error',
+			'501' => 'Not Implemented',
+			'502' => 'Bad Gateway',
+			'503' => 'Service Unavailable',
+			'504' => 'Gateway Timeout',
+			'505' => 'HTTP Version Not Supported',
+			'506' => 'Variant Also Negotiates',
+			'507' => 'Insufficient Storage',
+			'508' => 'Loop Detected',
+			'510' => 'Not Extended',
+			'511' => 'Network Authentication Required',
+			'420' => 'Method Failure',
+			//'420' => 'Enhance Your Calm',
+			'450' => 'Blocked by Windows Parental Controls',
+			'498' => 'Invalid Token',
+			'499' => 'Token Required',
+			'509' => 'Bandwidth Limit Exceeded',
+			'440' => 'Login Timeout',
+			'449' => 'Retry With',
+			//'451' => 'Redirect',
+			'444' => 'No Response',
+			'495' => 'SSL Certificate Error',
+			'496' => 'SSL Certificate Required',
+			'497' => 'HTTP Request Sent to HTTPS Port',
+			//'499' => 'Client Closed Request',
+			'520' => 'Unknown Error',
+			'521' => 'Web Server Is Down',
+			'522' => 'Connection Timed Out',
+			'523' => 'Origin Is Unreachable',
+			'524' => 'A Timeout Occurred',
+			'525' => 'SSL Handshake Failed',
+			'526' => 'Invalid SSL Certificate',
 		);
-		$found = false;
-		for ($i = 0; $i < count($this->allowed); $i++) {
-			if ($this->response_code == $this->allowed[$i]) {
-				$found = true;
-				break;
-			}
-		}
+		$found = in_array($this->response_code, array_keys($this->list_of_response_codes));
+
 		if (!$found) {
 			$this->internal_error = true;
-			$this->error_message = 'Response Code '.$response_code.' is not a valid 300, 400, or 500 http response code';
+			$this->error_message = 'Response Code ' . $response_code . ' is not a valid http response code';
 		}
 	}
+
 
 	// redirect
 	public function redirect($params = array())
@@ -91,15 +171,14 @@ abstract class ResponsesAbstract extends \Exception {
 				throw new ResponseAbstractException('Invalid type set for redirect url paramter. String must be given');
 			}
 		}
-		header(':', true, $code);
-		header('Location: '.$redirect);
+		header('Location: ' . $redirect, true, $code);
 		die;
 		
 	}
 
 	public function loadView($html = true)
 	{
-		header(':', true, $this->response_code);
+		header('HTTP/1.1 '.$this->response_code. ' '.$this->list_of_response_codes[$this->response_code]);
 		$Loader = new \UltraMVC\Views\Loader;
 		if ($Loader->viewExists('Responses/Response'.$this->response_code)) {
 			$Loader->view('Responses/Response'.$this->response_code);
