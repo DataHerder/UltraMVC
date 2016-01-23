@@ -23,7 +23,7 @@
  * @package     Views
  * @license     GNU license
  * @version     1.0
- * @link        my.public.repo
+ * @link        https://github.com/DataHerder/UltraMVC
  * @since       File available since
  */
 
