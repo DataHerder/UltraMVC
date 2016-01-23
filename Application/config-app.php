@@ -63,30 +63,33 @@
 /////////////////////////////////////////////////////////
 
 /**
+ * Constant to determine if LOCALHOST
+ */
+if ($_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+	define('LOCALHOST', true);
+	define('HTTP_HOST', '');
+} else {
+	define('LOCALHOST', false);
+	define('HTTP_HOST', $_SERVER['HTTP_HOST']);
+}
+
+/**
  * Here you define whether or not you are in production
  */
-define('PRODUCTION', false);
+if (LOCALHOST) {
+	define('PRODUCTION', false);
+} else {
+	define('PRODUCTION', true);
+}
+
+/**
+ * Define error reporting as necessary
+ */
 if (PRODUCTION) {
 	error_reporting(0);
 } else {
 	error_reporting(E_ALL ^ E_NOTICE);
 }
-
-/**
- * This logic takes the root directory and makes
- * a constant out of the ending root
- *
- */
-$tmp = explode("/", CUR_DIR);
-define('LAST_ROOT_DIR', array_pop($tmp));
-
-/**
- * If a controller is found as a page, setting
- * this to true will redirect the url with a
- * permanent redirect 303
- */
-define('REDIRECT_SLASH', true);
-
 
 /**
  * Here you define that you want strict autoloading
@@ -131,17 +134,6 @@ define('DEFAULT_CONTROLLER', 'Index');
  */
 define('CONTROLLER_CASE_SENSITIVE', false);
 
-
-/**
- * Constant to determine if LOCALHOST
- */
-if ($_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
-	define('LOCALHOST', true);
-	define('HTTP_HOST', '');
-} else {
-	define('LOCALHOST', false);
-	define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-}
 
 ///////////////////////////////////////////////////////////
 //
