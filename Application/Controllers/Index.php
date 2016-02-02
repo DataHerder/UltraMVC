@@ -2,6 +2,10 @@
 namespace Application\Controllers;
 
 
+/**
+ * Class Index
+ * @package Application\Controllers
+ */
 class Index extends \UltraController {
 	public function __construct(){
 		parent::__construct();

@@ -248,14 +248,14 @@ final class Router {
 						return true;
 					} elseif (!method_exists($cr, $page) && method_exists($cr, '__call')) {
 						$arguments = array();
-						$cr->_call($page, $arguments);
+						$cr->__call($page, $arguments);
 						return true;
 					}
 				}
 			}
 		}
 
-		throw new RouterException('Document not found');
+		throw new HttpResponse(404);
 
 	}
 
