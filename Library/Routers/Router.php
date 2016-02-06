@@ -1,23 +1,23 @@
-<?php 
+<?php
 /**
  * UltraMVC
  * A fast lightweight Model View Controller framework
- * 
+ *
  * Copyright (C) 2015 Paul Carlton
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author      Paul Carlton
  * @category    UltraMVC
  * @package     Routers
@@ -32,7 +32,7 @@ use UltraMVC\Responses\HttpResponse;
 
 /**
  * The Router class routes URLs to the correct destination and controller
- * 
+ *
  * @package Routers
  * @subpackage Router
  */
@@ -40,7 +40,7 @@ final class Router {
 
 
 	/**
-	 * 
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -48,7 +48,7 @@ final class Router {
 
 
 	/**
-	 * 
+	 *
 	 * @var \UltraMVC\Views\Errors\Error
 	 * @access private
 	 */
@@ -56,9 +56,9 @@ final class Router {
 
 
 	/**
-	 * 
+	 *
 	 * @var \UltraMVC\UltraMVCBootstrap
-	 * 
+	 *
 	 */
 	protected $Bootstrap = null;
 
@@ -82,9 +82,9 @@ final class Router {
 
 	/**
 	 * Gets the the controller needed to finish the request
-	 * 
+	 *
 	 * If controller not found, throws a not found router exception
-	 * 
+	 *
 	 * @throws \UltraMVC\Routers\RouterException
 	 */
 	public function callController()
@@ -172,7 +172,8 @@ final class Router {
 					die;
 				}
 
-				/* dbg_array([
+				/*
+				dbg_array([
 					'slash' => 0,
 					'bootstrap->root' => $this->Bootstrap->root,
 					'page' => $page,
@@ -181,7 +182,8 @@ final class Router {
 					'unser_score_controller' => $under_score_controller,
 					'namespace' => $namespace,
 					'controller' => $controller,
-				]);*/
+				]);
+				*/
 
 				$controllers[] = array(
 					'page' => 'index',
@@ -235,28 +237,51 @@ final class Router {
 		}
 
 
-
 		for ($i = 0; $i < count($controllers); $i++) {
 			$php_files = $controllers[$i]['php_files'];
 			$class = $controllers[$i]['class'];
 			$page = $controllers[$i]['page'];
 			foreach ($php_files as $php_file) {
 				if (is_readable($php_file)) {
+					self::setCurrentRoute(
+						$controllers[$i],
+						$php_file
+					);
 					$cr = new $class;
 					if (method_exists($cr, $page)) {
 						call_user_func(array($cr, $page));
+						self::setCurrentRoute(
+							$controllers[$i],
+							$php_file
+						);
 						return true;
 					} elseif (!method_exists($cr, $page) && method_exists($cr, '__call')) {
 						$arguments = array();
 						$cr->__call($page, $arguments);
+						self::setCurrentRoute(
+							$controllers[$i],
+							$php_file
+						);
 						return true;
 					}
 				}
 			}
 		}
-
 		throw new HttpResponse(404);
+	}
 
+
+	private static function setCurrentRoute($controller, $php_file) {
+		$_SESSION['$$ULTRA-MVC']['current_route'] = array(
+			'controller' => $controller,
+			'php_file' => $php_file,
+		);
+	}
+
+
+	public static function getCurrentRoute()
+	{
+		return $_SESSION['$$ULTRA-MVC']['current_route'];
 	}
 
 
@@ -294,7 +319,7 @@ final class Router {
 	/**
 	 * Helper function to get file name, controller and route
 	 * from the request
-	 * 
+	 *
 	 * @return array
 	 */
 	private function _traverseRoute()
@@ -323,7 +348,7 @@ final class Router {
 
 	/**
 	 * Gets the file name from traversing the route
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getFileName()
